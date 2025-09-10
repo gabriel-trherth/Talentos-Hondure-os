@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talentos Musicales Hondureños</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2c7cb0;
+            --secondary: #e67e22;
+            --secondary-dark: #d35400;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --transition: all 0.3s ease;
+            --error: #e74c3c;
+            --success: #25D366;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.7;
+            scroll-behavior: smooth;
+            padding-top: 70px;
+        }
+        
+        /* Efecto de texto flotante */
+        .floating-text {
+            position: relative;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dynamic-text {
+            color: var(--secondary);
+            margin-left: 0.5rem;
+            position: relative;
+            height: 40px;
+            overflow: hidden;
+        }
+        
+        .dynamic-text span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: slideUp 12s infinite;
+        }
+        
+        .dynamic-text span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .dynamic-text span:nth-child(2) {
+            animation-delay: 3s;
+        }
+        
+        .dynamic-text span:nth-child(3) {
+            animation-delay: 6s;
+        }
+        
+        .dynamic-text span:nth-child(4) {
+            animation-delay: 9s;
+        }
+        
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            25% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            margin-right: 1rem;
+            position: relative;
+        }
+        
+        .search-input {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            width: 200px;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3);
+        }
+        
+        .search-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .search-btn:hover {
+            background: var(--secondary-dark);
+        }
+        
+        /* Estilos para el contenedor de resultados de YouTube */
+        #youtubeResultsContainer {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 300px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease;
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #youtubeResultsContainer h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        #youtubeResultsContainer p {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .youtube-search-btn {
+            display: inline-block;
+            background-color: #ff0000;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .youtube-search-btn i {
+            margin-right: 5px;
+        }
+        
+        #closeYouTubeResults {
+            margin-left: 10px;
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            #youtubeResultsContainer {
+                position: static;
+                max-width: 100%;
+                margin: 20px 0;
+            }
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        .nav-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            list-style: none;
+            padding: 0.5rem 0;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .dropdown-menu li {
+            margin: 0;
+        }
+        
+        .dropdown-menu a {
+            color: var(--dark);
+            display: block;
+            padding: 0.5rem 1rem;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary);
+        }
+        
+        @media (max-width: 992px) {
+            .search-container {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 70px);
+                background: linear-gradient(135deg, var(--primary), var(--primary-light));
+                flex-direction: column;
+                padding: 2rem;
+                transition: var(--transition);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-menu li {
+                margin: 1rem 0;
+            }
+            
+            .dropdown-menu {
+                position: static;
+                background-color: rgba(255, 255, 255, 0.1);
+                box-shadow: none;
+                margin-top: 0.5rem;
+                display: none;
+            }
+            
+            .dropdown-menu.active {
+                display: block;
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .dropdown-menu a {
+                color: white;
+                padding-left: 2rem;
+            }
+            
+            .dropdown-toggle::after {
+                content: '+';
+                margin-left: 0.5rem;
+                transition: var(--transition);
+            }
+            
+            .dropdown-toggle.active::after {
+                content: '-';
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
+            background-size: cover;
+            opacity: 0.3;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+            position: relative;
+            letter-spacing: 1px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .hero-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .hero-section:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .hero-section h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .hero-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .highlight-text {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin: 2rem 0;
+            line-height: 1.8;
+            padding: 1.5rem;
+            background-color: rgba(26, 82, 118, 0.05);
+            border-left: 5px solid var(--secondary);
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-text::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 4rem;
+            color: rgba(230, 126, 34, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .highlight-text::after {
+            content: '"';
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            font-size: 4rem;
+            color: rgba(230, 126, 34, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .artist-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .artist-section:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .artist-section h1, .artist-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .artist-section h1 {
+            font-size: 2rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .artist-section h2 {
+            font-size: 1.6rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .artist-section h2::before {
+            content: "";
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background-color: var(--secondary);
+            margin-right: 15px;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+        }
+        
+        .artist-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .artist-image {
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .artist-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .media-container {
+            width: 100%;
+            max-width: 550px;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        audio, video {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+        
+        audio {
+            background-color: var(--light-gray);
+            padding: 10px;
+        }
+        
+        video {
+            margin-top: 1.5rem;
+            background-color: #000;
+        }
+        
+        p {
+            margin-bottom: 1.2rem;
+            text-align: justify;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        
+        a {
+            color: var(--secondary-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        a:hover {
+            color: var(--primary);
+        }
+        
+        a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        
+        a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 0;
+            margin-top: 4rem;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
+            background-size: cover;
+            opacity: 0.3;
+        }
+        
+        footer h3 {
+            font-weight: 500;
+            font-size: 1.2rem;
+            position: relative;
+            letter-spacing: 1px;
+        }
+        
+        .caption {
+            font-style: italic;
+            color: var(--gray);
+            text-align: center;
+            margin-top: -0.8rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .artist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .artist-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .artist-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .artist-card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .artist-card-body {
+            padding: 1.5rem;
+        }
+        
+        .artist-card-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 99;
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-3px);
+        }
+        
+        /* Estilos para la sección de contacto */
+        .contact-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .contact-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .contact-card {
+            flex: 1;
+            min-width: 250px;
+            background-color: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .contact-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .contact-card i {
+            color: var(--secondary);
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Estilos específicos para el formulario de WhatsApp */
+        .whatsapp-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .whatsapp-form h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .submit-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .whatsapp-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .form-group.error input,
+        .form-group.error textarea,
+        .form-group.error select {
+            border-color: var(--error);
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .spinner {
+            display: none;
+            margin-left: 0.5rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .submit-btn.loading .spinner {
+            display: inline-block;
+        }
+        
+        .submit-btn.loading .btn-text {
+            opacity: 0.7;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        /* Estilos para la sección de encuesta */
+        .survey-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .survey-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .survey-question {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .survey-question:last-child {
+            border-bottom: none;
+        }
+        
+        .survey-question h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+        
+        .radio-option label,
+        .checkbox-option label {
+            cursor: pointer;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
+        }
+        
+        /* Estilos para el sistema de valoración por estrellas */
+        .rating-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .rating-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .rating-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .rating-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .rating-item h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .star {
+            font-size: 1.8rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .star:hover,
+        .star.active {
+            color: var(--secondary);
+        }
+        
+        .rating-result {
+            margin-top: 1rem;
+            font-weight: 500;
+            color: var(--primary);
+            display: none;
+        }
+        
+        .rating-result.show {
+            display: block;
+        }
+        
+        .submit-survey-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+        }
+        
+        .submit-survey-btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Estilos para las redes sociales */
+        .social-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .social-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .facebook { background-color: #3b5998; }
+        .instagram { background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); }
+        .youtube { background-color: #ff0000; }
+        .twitter { background-color: #1da1f2; }
+        .tiktok { background-color: #000000; }
+        .spotify { background-color: #1db954; }
+        
+        /* Estilos para cookies */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.9);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+        
+        .cookie-text {
+            flex: 1;
+            min-width: 250px;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cookie-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .accept-btn {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .decline-btn {
+            background-color: var(--error);
+            color: white;
+        }
+        
+        .settings-btn {
+            background-color: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        /* Estadísticas */
+        .stats-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stats-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background-color: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        /* Estilos para la tabla de artistas */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        tr:hover {
+            background-color: rgba(26, 82, 118, 0.05);
+        }
+        
+        /* Estilos para la galería */
+        .gallery-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .gallery-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.7rem;
+            display: inline-block;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            aspect-ratio: 1 / 1;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+        
+        /* Modal para la galería */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 5vh;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .caption-text {
+            margin: auto;
+            display: block;
+            width: 80%;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .highlight-text {
+                font-size: 1.15rem;
+                padding: 1.2rem;
+            }
+            
+            .hero-section, .artist-section, .survey-section, .rating-section, .social-section, .stats-section, .gallery-section {
+                padding: 1.8rem;
+            }
+            
+            .artist-section h1, .survey-section h2, .rating-section h2, .social-section h2, .stats-section h2, .gallery-section h2 {
+                font-size: 1.7rem;
+            }
+            
+            .artist-section h2 {
+                font-size: 1.4rem;
+            }
+            
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .whatsapp-form {
+                padding: 1.5rem;
+            }
+            
+            .whatsapp-form h3 {
+                font-size: 1.3rem;
+            }
+            
+            .stats-grid, .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-section h1, .artist-section h1, .survey-section h2, .rating-section h2, .social-section h2, .stats-section h2, .gallery-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .artist-section h2 {
+                font-size: 1.3rem;
+            }
+            
+            .highlight-text {
+                font-size: 1.1rem;
+            }
+            
+            .star {
+                font-size: 1.5rem;
+            }
+            
+            .cookie-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cookie-text {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .cookie-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <span class="floating-text">Talentos</span>
+            <div class="dynamic-text">
+                <span>Musicales</span>
+                <span>Hondureños</span>
+                <span>Emergentes</span>
+                <span>2024</span>
+            </div>
+        </a>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar artista...">
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#tabla-artistas">Artistas</a></li>
+            <li><a href="#galeria">Galería</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" id="dropdownToggle">Contactos <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu" id="dropdownMenu">
+                    <li><a href="#contacto">Formulario WhatsApp</a></li>
+                    <li><a href="#ubicacion">Ubicación</a></li>
+                    <li><a href="tel:+50499380085">Teléfono</a></li>
+                    <li><a href="mailto:calixescobarrogergabriel@gmail.com">Email</a></li>
+                </ul>
+            </li>
+            <li><a href="#encuesta">Encuesta</a></li>
+            <li><a href="#valoracion">Valoración</a></li>
+            <li><a href="#redes">Redes</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenedor para resultados de YouTube (se agregará dinámicamente) -->
+    <div id="youtubeResultsContainer"></div>
+
+    <!-- Modal para la galería -->
+    <div id="galleryModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption" class="caption-text"></div>
+    </div>
+
+    <header id="inicio">
+        <div class="container">
+            <h1><span class="floating-text">TALENTOS MUSICALES HONDUREÑOS</span></h1>
+            <p>Descubre los artistas emergentes que están transformando la escena musical de Honduras</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero-section">
+            <h1>Nuevos Talentos: Artistas Hondureños Que Debe Conocer</h1>
+            <p>
+                Conozca a los artistas emergentes que están revolucionando la escena musical. Desde ritmos urbanos hasta propuestas innovadoras. ¡Descubra su música!
+            </p>
+            <img src="imagenes/primer.jpg" alt="Artistas Hondureños" class="hero-image">
+            <p class="caption">Daniel Ochoa, Fany Fonseca y Key Key</p>
+            <p>
+                Si quieres ir a ver más sobre talentos, haz click 
+                <a href='https://www.laprensa.hn/espectaculos/nuevos-talentos-artistas-hondurenos-conocer-emergentes-musica-MK17957812' target="_blank">aquí</a>.
+            </p>
+
+            <p class="highlight-text">
+                REDACCIÓN. En la encrucijada de culturas y tradiciones que define a Honduras, 
+                la música surge como un vibrante reflejo de su diversidad. Desde las profundidades de sus raíces indígenas
+                hasta las influencias de la colonización española y la riqueza de la música africana, la sonoridad de Honduras
+                es un caleidoscopio de ritmos y melodías que narran la historia y el espíritu de su gente.
+            </p>
+
+            <p>
+                A través de instrumentos autóctonos como la marimba y el tambor, así como géneros como la punta, el merengue y la cumbia, 
+                la música hondureña teje un tapiz sonoro que invita a explorar sus paisajes, tradiciones y pasiones. En esta tierra de contrastes y colores, 
+                la música no solo entretiene, sino que también conecta, emociona y celebra la riqueza cultural.
+            </p>
+
+            <p class="highlight-text">
+                Pero en específico, los nuevos talentos son los que tratan de emerger a lo más alto, aprovechando sus dotes musicales y su influencia en la juventud para "pegar una rola" a nivel nacional e internacional.
+            </p>
+        </section>
+
+        <!-- Sección de Servicios -->
+        <section class="artist-section" id="servicios">
+            <h1>Nuestros Servicios</h1>
+            <p>Ofrecemos una variedad de servicios para promover y apoyar a los talentos musicales hondureños:</p>
+            
+            <h2>Promoción de Artistas</h2>
+            <p>Ayudamos a los artistas emergentes a darse a conocer a través de nuestras plataformas digitales y eventos en vivo.</p>
+            
+            <h2>Producción Musical</h2>
+            <p>Contamos con estudios de grabación y equipo profesional para ayudar a los artistas a producir su música con la mejor calidad.</p>
+            
+            <h2>Gestión de Eventos</h2>
+            <p>Organizamos conciertos y eventos musicales para dar visibilidad a los talentos locales.</p>
+            
+            <h2>Asesoramiento Profesional</h2>
+            <p>Ofrecemos asesoramiento en marketing digital, derechos de autor y desarrollo de carrera artística.</p>
+        </section>
+
+        <!-- Sección de Tabla de Artistas -->
+        <section class="artist-section" id="tabla-artistas">
+            <h1>Artistas Hondureños y sus Canciones</h1>
+            <p>Conoce a los principales artistas emergentes de Honduras y sus canciones más populares:</p>
+            
+            <div class="table-container">
+                <table id="artistsTable">
+                    <thead>
+                        <tr>
+                            <th>Artista</th>
+                            <th>Género</th>
+                            <th>Número de Canciones</th>
+                            <th>Canciones Destacadas</th>
+                            <th>Año de Debut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Los Hijos del Maíz</td>
+                            <td>Rap, Reggae</td>
+                            <td>25+</td>
+                            <td>Kintosol, Resistencia, Raíces</td>
+                            <td>2015</td>
+                        </tr>
+                        <tr>
+                            <td>Key Key</td>
+                            <td>Reggaetón, Trap</td>
+                            <td>50+</td>
+                            <td>Tengo un Plan, Mundo de Ghetto, Flow Calle</td>
+                            <td>2012</td>
+                        </tr>
+                        <tr>
+                            <td>ALEMVN</td>
+                            <td>Reggaetón, Urbano</td>
+                            <td>30+</td>
+                            <td>Bailando, Dime, Perdóname</td>
+                            <td>2018</td>
+                        </tr>
+                        <tr>
+                            <td>Daniel Ochoa</td>
+                            <td>Balada, Pop</td>
+                            <td>40+</td>
+                            <td>A Ti, Volverás, Sin Ti</td>
+                            <td>2010</td>
+                        </tr>
+                        <tr>
+                            <td>Fany Fonseca (FVNY)</td>
+                            <td>Pop, Alternativo</td>
+                            <td>15+</td>
+                            <td>Noche de Sol, Volverte a Ver, Baila</td>
+                            <td>2019</td>
+                        </tr>
+                        <tr>
+                            <td>Amaya The Lic</td>
+                            <td>Playero, Urbano</td>
+                            <td>20+</td>
+                            <td>Playero, Fiesta, Baila Conmigo</td>
+                            <td>2020</td>
+                        </tr>
+                        <tr>
+                            <td>Las Catrachas</td>
+                            <td>Punta, Folclore</td>
+                            <td>10+</td>
+                            <td>Sopa de Caracol, Punta Power, La Punta</td>
+                            <td>2021</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección de Galería de Artistas -->
+        <section class="gallery-section" id="galeria">
+            <h2>Galería de Artistas Hondureños</h2>
+            <p>Explora imágenes de los talentos musicales más destacados de Honduras</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="imagenes/Hijosdelmaiz.jpeg" alt="Los Hijos del Maíz" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Los Hijos del Maíz</h3>
+                        <p>Fusión de rap y reggae con mensaje social</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/Key-Key.jpg" alt="Key Key" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Key Key</h3>
+                        <p>Artista urbano con influencia internacional</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/OIP.jpeg" alt="ALEMVN" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>ALEMVN</h3>
+                        <p>Referente del reggaetón hondureño</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/daniel.jpg" alt="Daniel Ochoa" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Daniel Ochoa</h3>
+                        <p>Baladista romántico con proyección internacional</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/fany.jpg" alt="Fany Fonseca" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Fany Fonseca (FVNY)</h3>
+                        <p>Voz femenina del pop alternativo</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/principal_playero-1.jpg" alt="Amaya The Lic" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Amaya The Lic</h3>
+                        <p>Representante del género playero</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/las_catrachas.jpg" alt="Las Catrachas" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Las Catrachas</h3>
+                        <p>Grupo femenino de música punta</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="imagenes/primer.jpg" alt="Artistas Hondureños" class="gallery-img">
+                    <div class="gallery-caption">
+                        <h3>Artistas en Concierto</h3>
+                        <p>Presentación en evento musical</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Estadísticas -->
+        <section class="stats-section" id="estadisticas">
+            <h2>Estadísticas de Visitas</h2>
+            <p>Estas son algunas estadísticas sobre el uso de nuestro sitio:</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalVisits">0</div>
+                    <div class="stat-label">Visitas Totales</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="monthlyVisits">0</div>
+                    <div class="stat-label">Visitas este Mes</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="artistSearches">0</div>
+                    <div class="stat-label">Búsquedas de Artistas</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="surveyResponses">0</div>
+                    <div class="stat-label">Encuestas Completadas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Encuesta -->
+        <section class="survey-section" id="encuesta">
+            <h2>Encuesta: Opinión sobre los Artistas Hondureños</h2>
+            <p>Por favor, responde las siguientes preguntas para ayudarnos a mejorar nuestro contenido y servicios.</p>
+            
+            <form id="surveyForm">
+                <div class="survey-question">
+                    <h3>1. ¿Con cuál de estos artistas hondureños estás más familiarizado?</h3>
+                    <div class="options-container">
+                        <div class="radio-option">
+                            <input type="radio" id="artist1" name="familiarArtist" value="Los Hijos del Maíz">
+                            <label for="artist1">Los Hijos del Maíz</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="artist2" name="familiarArtist" value="Key Key">
+                            <label for="artist2">Key Key</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="artist3" name="familiarArtist" value="ALEMVN">
+                            <label for="artist3">ALEMVN</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="artist4" name="familiarArtist" value="Daniel Ochoa">
+                            <label for="artist4">Daniel Ochoa</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="artist5" name="familiarArtist" value="Ninguno">
+                            <label for="artist5">Ninguno de los anteriores</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-question">
+                    <h3>2. ¿Qué género musical de Honduras prefieres?</h3>
+                    <div class="options-container">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genre1" name="preferredGenre" value="Punta">
+                            <label for="genre1">Punta</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genre2" name="preferredGenre" value="Reggaetón">
+                            <label for="genre2">Reggaetón</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genre3" name="preferredGenre" value="Rap">
+                            <label for="genre3">Rap</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genre4" name="preferredGenre" value="Balada">
+                            <label for="genre4">Balada</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genre5" name="preferredGenre" value="Otro">
+                            <label for="genre5">Otro</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-question">
+                    <h3>3. ¿Cómo descubriste a estos artistas hondureños?</h3>
+                    <div class="options-container">
+                        <div class="radio-option">
+                            <input type="radio" id="discovery1" name="discoveryMethod" value="Redes sociales">
+                            <label for="discovery1">Redes sociales (YouTube, Instagram, TikTok, etc.)</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="discovery2" name="discoveryMethod" value="Recomendación">
+                            <label for="discovery2">Recomendación de amigos/familia</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="discovery3" name="discoveryMethod" value="Eventos">
+                            <label for="discovery3">Eventos en vivo o conciertos</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="discovery4" name="discoveryMethod" value="Radio/TV">
+                            <label for="discovery4">Radio o televisión</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="discovery5" name="discoveryMethod" value="Otro">
+                            <label for="discovery5">Otro</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-question">
+                    <h3>4. ¿Qué te gustaría ver más en nuestra página sobre artistas hondureños?</h3>
+                    <textarea class="text-input" id="suggestions" name="suggestions" placeholder="Escribe tus sugerencias aquí..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-survey-btn">Enviar Encuesta</button>
+            </form>
+        </section>
+
+        <!-- Sección de Valoración por Estrellas -->
+        <section class="rating-section" id="valoracion">
+            <h2>Valora Nuestros Artistas</h2>
+            <p>Califica a los artistas hondureños según tu preferencia (1 a 5 estrellas):</p>
+            
+            <div class="rating-container">
+                <div class="rating-item">
+                    <h3>Los Hijos del Maíz</h3>
+                    <div class="stars" data-artist="Los Hijos del Maíz">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <p class="rating-result" id="rating-result-1"></p>
+                </div>
+                
+                <div class="rating-item">
+                    <h3>Key Key</h3>
+                    <div class="stars" data-artist="Key Key">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <p class="rating-result" id="rating-result-2"></p>
+                </div>
+                
+                <div class="rating-item">
+                    <h3>ALEMVN</h3>
+                    <div class="stars" data-artist="ALEMVN">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <p class="rating-result" id="rating-result-3"></p>
+                </div>
+                
+                <div class="rating-item">
+                    <h3>Daniel Ochoa</h3>
+                    <div class="stars" data-artist="Daniel Ochoa">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <p class="rating-result" id="rating-result-4"></p>
+                </div>
+                
+                <div class="rating-item">
+                    <h3>Fany Fonseca</h3>
+                    <div class="stars" data-artist="Fany Fonseca">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <p class="rating-result" id="rating-result-5"></p>
+                </div>
+            </div>
+            
+            <button id="submitRatings" class="submit-survey-btn">Enviar Valoraciones</button>
+        </section>
+
+        <!-- Sección de Redes Sociales -->
+        <section class="social-section" id="redes">
+            <h2>Síguenos en Redes Sociales</h2>
+            <p>Conéctate con nosotros para estar al tanto de los últimos talentos y eventos musicales en Honduras.</p>
+            
+            <div class="social-links">
+                <a href="https://www.facebook.com/" target="_blank" class="social-link facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" class="social-link instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.youtube.com/" target="_blank" class="social-link youtube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://twitter.com/" target="_blank" class="social-link twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.tiktok.com/" target="_blank" class="social-link tiktok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="https://open.spotify.com/" target="_blank" class="social-link spotify">
+                    <i class="fab fa-spotify"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Sección de Contacto con Formulario WhatsApp -->
+        <section class="contact-section" id="contacto">
+            <h2>Contáctanos</h2>
+            <p>Si eres un artista emergente o quieres apoyar el talento hondureño, no dudes en contactarnos.</p>
+            
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h3><i class="fas fa-envelope"></i> Email</h3>
+                    <p>calixescobarrogergabriel@gmail.com</p>
+                </div>
+                
+                <div class="contact-card">
+                    <h3><i class="fas fa-phone"></i> Teléfono</h3>
+                    <p>+504 9938-0085</p>
+                </div>
+                
+                <div class="contact-card">
+                    <h3><i class="fas fa-clock"></i> Horario</h3>
+                    <p>Lunes a Viernes: 9:00 AM - 5:00 PM</p>
+                    <p>Sábados: 10:00 AM - 2:00 PM</p>
+                </div>
+            </div>
+            
+            <!-- Formulario de WhatsApp Integrado -->
+            <div class="whatsapp-form">
+                <h3><i class="fab fa-whatsapp"></i> Envíanos un mensaje por WhatsApp</h3>
+                <form id="whatsappForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo:</label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Juan Pérez">
+                        <span class="error-message">Por favor ingrese su nombre completo</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Número de teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono" required placeholder="Ej: 99380085 o +50499380085">
+                        <span class="error-message">Ingrese un número de teléfono válido (mínimo 8 dígitos)</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="asunto">Asunto:</label>
+                        <select id="asunto" name="asunto" required>
+                            <option value="" disabled selected>Selecciona un asunto</option>
+                            <option value="Promoción">Promoción de artista</option>
+                            <option value="Producción">Producción musical</option>
+                            <option value="Evento">Gestión de eventos</option>
+                            <option value="Asesoría">Asesoramiento profesional</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <span class="error-message">Por favor seleccione un asunto</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje:</label>
+                        <textarea id="mensaje" name="mensaje" required placeholder="Escribe tu mensaje aquí..."></textarea>
+                        <span class="error-message">Por favor escriba su mensaje</span>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fab fa-whatsapp"></i>
+                        <span class="btn-text">Enviar por WhatsApp</span>
+                        <span class="spinner">↻</span>
+                    </button>
+                    
+                    <p class="whatsapp-info">Al hacer clic se abrirá WhatsApp con tu mensaje preparado.</p>
+                </form>
+            </div>
+            
+            <div id="ubicacion">
+                <h3><i class="fas fa-map-marker-alt"></i> Ubicación</h3>
+                <p>Nos encontramos en Juticalpa, Olancho, cerca de la Gasolinera Uno en el centro de la ciudad.</p>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.2345678901234!2d-86.219576!3d14.666667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6a3d3d3d3d3d3d%3A0x8f6a3d3d3d3d3d3d!2sGasolinera%20Uno%2C%20Juticalpa!5e0!3m2!1sen!2shn!4v1620000000000!5m2!1sen!2shn" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="artist-section">
+            <h1>Perfiles De Artistas Emergentes En 2024</h1>
+
+            <h2>1. Los Hijos del Maíz:</h2>
+            <p>
+                Con su fusión de rap, reggae y ritmos latinoamericanos, Los Hijos del Maíz están llevando el mensaje de conciencia social y empoderamiento a través de su música. 
+                Con letras que abordan temas como la justicia social, la resistencia y la identidad cultural, este dúo está ganando seguidores en toda Honduras con su compromiso con la música como herramienta de cambio y transformación.
+            </p>
+            <p>
+                Sus presentaciones en diferentes eventos privados les abrieron las puertas con el público local, además de sus participaciones en restaurantes, 
+                en donde sus canciones en acústico son un magistral plus de su innegable talento.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/Hijosdelmaiz.jpeg" alt="Los Hijos del Maíz" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/Los Hijos Del Maiz- Kintosol.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+                <div class="media-container">
+                    <video controls>
+                        <source src="musica_audio/kinto-sol-los-hijos-del-maiz-music-video-ytshorts.savetube.me.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento de video.
+                    </video>
+                </div>
+            </div>
+
+            <h2>2. Key Key:</h2>
+            <p class="highlight-text">
+                Comenzó su carrera musical a una edad temprana, mostrando un talento innato para el canto y la composición. 
+                A lo largo de los años, ha desarrollado un estilo distintivo que combina letras profundas y reflexivas con ritmos contagiosos, 
+                abordando temas que van desde el amor, desamor, y la vida cotidiana, sus raíces culturales hasta la justicia social.
+            </p>
+            <p>
+                Su trayectoria incluye la producción de varios álbumes y sencillos que han recibido elogios de críticos y fans por igual. 
+                Canciones como "Raíces", "Mundo de Ghetto" y "Tengo un plan" han alcanzado gran popularidad en Honduras y más allá.
+            </p>
+            <p>
+                Además de su trabajo en solitario, Key Key ha colaborado con otros artistas locales e internacionales, 
+                ampliando aún más su alcance y contribuyendo a la diversidad del panorama musical hondureño.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/Key-Key.jpg" alt="Key Key" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/KEY-KEY FT OZUNA - TENGO UN PLAN REMIX (VÍDEO OFICIAL).mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <h2>3. ALEMVN:</h2>
+            <p>
+                Es un joven artista y productor musical hondureño. Se ha posicionado como uno de los artistas y productores más exitosos y galardonados dentro del género musical hondureño y centroamericano.
+            </p>
+            <p>
+                En su discografía se destacan colaboraciones importantes con artistas hondureños y otros de talla internacional.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/OIP.jpeg" alt="ALEMVN" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/Alemvn.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <h2>4. Daniel Ochoa:</h2>
+            <p>
+                Es un cantante hondureño (balada, jazz, bolero y pop) nacido en San Pedro Sula. Es considerado uno de los cantantes de música romántica más influyentes del país.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/daniel.jpg" alt="Daniel Ochoa" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/Daniel Ochoa - A Ti (Official Video).mp3" type="audio/mpeg">
+                        Tu navegader no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <h2>5. Amaya The Lic:</h2>
+            <p>
+                El nombre y voz de "Amaya The Lic" se ha vuelto viral gracias a las redes sociales, trayendo frescura al género playero en Honduras.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/principal_playero-1.jpg" alt="Amaya The Lic" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/playero.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <h2>6. Las Catrachas:</h2>
+            <p>
+                Integradas por Kiria Rubio, Kimberly Madrid, Merin la "Turca" Sorto, Génesis Garay y Susana Villatoro. 
+                Estas cinco jóvenes revolucionan la escena musical con su estilo y canciones al ritmo de punta.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/las_catrachas.jpg" alt="Las Catrachas" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/punta.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <h2>7. Fany Fonseca:</h2>
+            <p>
+                Más conocida como FVNY, es una cantautora emergente que mezcla géneros musicales con un estilo vocal único y uso de spanglish.
+            </p>
+            <div class="artist-content">
+                <img src="imagenes/fany.jpg" alt="Fany Fonseca" class="artist-image">
+                <div class="media-container">
+                    <audio controls>
+                        <source src="musica_audio/Fany.mp3" type="audio/mpeg">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 2rem;">
+                Si quieres ir a YouTube, haz click 
+                <a href='https://www.youtube.com' target="_blank">aquí</a>.
+            </p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <h3>ROGER GABRIEL CALIX ESCOBAR</h3>
+        </div>
+    </footer>
+
+    <!-- Banner de Cookies -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-text">
+            <p>Utilizamos cookies para mejorar tu experiencia en nuestro sitio web. Al continuar navegando, aceptas nuestro uso de cookies.</p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn accept-btn" id="acceptCookies">Aceptar</button>
+            <button class="cookie-btn decline-btn" id="declineCookies">Rechazar</button>
+            <button class="cookie-btn settings-btn" id="settingsCookies">Configurar</button>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        const dropdownToggle = document.getElementById('dropdownToggle');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        dropdownToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            dropdownMenu.classList.toggle('active');
+            dropdownToggle.classList.toggle('active');
+        });
+        
+        // Cerrar menú al hacer clic en un enlace (solo móvil)
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navMenu.classList.remove('active');
+                    
+                    // Si es un enlace del dropdown, mantener el dropdown abierto
+                    if (!link.classList.contains('dropdown-toggle')) {
+                        dropdownMenu.classList.remove('active');
+                        dropdownToggle.classList.remove('active');
+                    }
+                }
+            });
+        });
+        
+        // Efecto suave al hacer scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animación para las imágenes al aparecer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.artist-image, .hero-image').forEach(img => {
+            img.style.opacity = 0;
+            img.style.transform = 'translateY(20px)';
+            img.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(img);
+        });
+
+        // Botón de volver arriba
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('active');
+            } else {
+                backToTopButton.classList.remove('active');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Código JavaScript para el formulario de WhatsApp
+        document.getElementById('whatsappForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validar campos
+            let isValid = true;
+            const formGroups = document.querySelectorAll('.form-group');
+            
+            formGroups.forEach(group => {
+                const input = group.querySelector('input, textarea, select');
+                if (input && input.required && !input.value.trim()) {
+                    group.classList.add('error');
+                    isValid = false;
+                } else {
+                    group.classList.remove('error');
+                }
+            });
+            
+            // Validar teléfono específicamente
+            const telefonoInput = document.getElementById('telefono');
+            let telefono = telefonoInput.value.replace(/\D/g, '');
+            
+            if (telefono.length < 8) {
+                telefonoInput.parentElement.classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return;
+            }
+            
+            // Mostrar spinner y deshabilitar botón
+            const submitBtn = this.querySelector('.submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Simular procesamiento (puedes quitarlo en producción)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Obtener valores del formulario
+            const nombre = document.getElementById('nombre').value;
+            const asunto = document.getElementById('asunto').value;
+            const mensaje = document.getElementById('mensaje').value;
+            
+            // Formatear número de teléfono
+            if (!telefono.startsWith('504') && telefono.length === 8) {
+                telefono = '504' + telefono;
+            }
+            
+            // Crear el mensaje estructurado para WhatsApp
+            const textoMensaje = `*Nuevo mensaje de contacto*%0A%0A` +
+                                `*Nombre:* ${encodeURIComponent(nombre)}%0A` +
+                                `*Teléfono:* ${encodeURIComponent(telefono)}%0A` +
+                                `*Asunto:* ${encodeURIComponent(asunto)}%0A` +
+                                `*Mensaje:*%0A${encodeURIComponent(mensaje)}`;
+            
+            // Crear el enlace de WhatsApp
+            const urlWhatsApp = `https://wa.me/${telefono}?text=${textoMensaje}`;
+            
+            // Abrir WhatsApp en una nueva pestaña
+            window.open(urlWhatsApp, '_blank');
+            
+            // Mostrar notificación de éxito
+            showNotification('Mensaje preparado. Por favor confirma el envío en WhatsApp.');
+            
+            // Resetear formulario
+            this.reset();
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+            
+            // Registrar interacción con el formulario
+            if (areCookiesAccepted()) {
+                incrementStat('surveyResponses');
+            }
+        });
+
+        // Función para mostrar notificaciones
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+        }
+
+        // Código para la encuesta
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener respuestas
+            const familiarArtist = document.querySelector('input[name="familiarArtist"]:checked');
+            const preferredGenres = document.querySelectorAll('input[name="preferredGenre"]:checked');
+            const discoveryMethod = document.querySelector('input[name="discoveryMethod"]:checked');
+            const suggestions = document.getElementById('suggestions').value;
+            
+            // Validar que al menos un artista esté seleccionado
+            if (!familiarArtist) {
+                showNotification('Por favor selecciona al menos un artista con el que estés familiarizado.');
+                return;
+            }
+            
+            // Validar que al menos un género esté seleccionado
+            if (preferredGenres.length === 0) {
+                showNotification('Por favor selecciona al menos un género musical que prefieras.');
+                return;
+            }
+            
+            // Validar método de descubrimiento
+            if (!discoveryMethod) {
+                showNotification('Por favor selecciona cómo descubriste a estos artistas.');
+                return;
+            }
+            
+            // Crear objeto con las respuestas
+            const surveyData = {
+                familiarArtist: familiarArtist.value,
+                preferredGenres: Array.from(preferredGenres).map(genre => genre.value),
+                discoveryMethod: discoveryMethod.value,
+                suggestions: suggestions
+            };
+            
+            // Aquí normalmente enviarías los datos a un servidor
+            console.log('Respuestas de la encuesta:', surveyData);
+            
+            // Mostrar notificación de éxito
+            showNotification('¡Gracias por completar nuestra encuesta! Tus respuestas han sido guardadas.');
+            
+            // Resetear formulario
+            this.reset();
+            
+            // Registrar interacción con la encuesta
+            if (areCookiesAccepted()) {
+                incrementStat('surveyResponses');
+            }
+        });
+
+        // Código para el sistema de valoración por estrellas
+        document.querySelectorAll('.stars').forEach(starsContainer => {
+            const stars = starsContainer.querySelectorAll('.star');
+            const artistName = starsContainer.getAttribute('data-artist');
+            const resultElement = document.getElementById(`rating-result-${starsContainer.parentElement.id.split('-').pop()}`);
+            
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    
+                    // Actualizar estrellas seleccionadas
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    // Mostrar resultado
+                    resultElement.textContent = `Has valorado a ${artistName} con ${value} ${value === 1 ? 'estrella' : 'estrellas'}. ¡Gracias!`;
+                    resultElement.classList.add('show');
+                });
+                
+                // Efecto hover
+                star.addEventListener('mouseover', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.style.color = 'var(--secondary)';
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseout', () => {
+                    stars.forEach(s => {
+                        if (!s.classList.contains('active')) {
+                            s.style.color = '#ddd';
+                        }
+                    });
+                });
+            });
+        });
+
+        // Enviar valoraciones
+        document.getElementById('submitRatings').addEventListener('click', () => {
+            const ratings = {};
+            
+            document.querySelectorAll('.stars').forEach(starsContainer => {
+                const artistName = starsContainer.getAttribute('data-artist');
+                const activeStars = starsContainer.querySelectorAll('.star.active').length;
+                
+                if (activeStars > 0) {
+                    ratings[artistName] = activeStars;
+                }
+            });
+            
+            if (Object.keys(ratings).length === 0) {
+                showNotification('Por favor valora al menos un artista antes de enviar.');
+                return;
+            }
+            
+            // Aquí normalmente enviarías las valoraciones a un servidor
+            console.log('Valoraciones enviadas:', ratings);
+            
+            showNotification('¡Gracias por tus valoraciones! Hemos registrado tus preferencias.');
+            
+            // Ocultar todos los resultados después de enviar
+            document.querySelectorAll('.rating-result').forEach(result => {
+                result.classList.remove('show');
+            });
+            
+            // Resetear estrellas
+            document.querySelectorAll('.star').forEach(star => {
+                star.classList.remove('active');
+                star.style.color = '#ddd';
+            });
+            
+            // Registrar interacción con valoraciones
+            if (areCookiesAccepted()) {
+                incrementStat('surveyResponses');
+            }
+        });
+
+        // BUSCADOR FUNCIONAL MEJORADO
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        // Mapeo de artistas a sus secciones y enlaces de YouTube
+        const artistData = {
+            'los hijos del maíz': {
+                sectionId: 'Los Hijos del Maíz',
+                youtubeQuery: 'Los Hijos del Maíz música',
+                localResults: true
+            },
+            'key key': {
+                sectionId: 'Key Key',
+                youtubeQuery: 'Key Key música hondureña',
+                localResults: true
+            },
+            'alemvn': {
+                sectionId: 'ALEMVN',
+                youtubeQuery: 'ALEMVN música',
+                localResults: true
+            },
+            'daniel ochoa': {
+                sectionId: 'Daniel Ochoa',
+                youtubeQuery: 'Daniel Ochoa cantante hondureño',
+                localResults: true
+            },
+            'fany fonseca': {
+                sectionId: 'Fany Fonseca',
+                youtubeQuery: 'FVNY Fany Fonseca',
+                localResults: true
+            },
+            'amaya the lic': {
+                sectionId: 'Amaya The Lic',
+                youtubeQuery: 'Amaya The Lic playero',
+                localResults: true
+            },
+            'las catrachas': {
+                sectionId: 'Las Catrachas',
+                youtubeQuery: 'Las Catrachas punta hondureña',
+                localResults: true
+            }
+        };
+
+        searchBtn.addEventListener('click', searchArtist);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchArtist();
+            }
+        });
+
+        function searchArtist() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                showNotification('Por favor ingresa el nombre de un artista');
+                return;
+            }
+            
+            // Buscar coincidencias exactas o parciales
+            let foundArtist = null;
+            
+            for (const [key, data] of Object.entries(artistData)) {
+                if (key.includes(searchTerm)) {
+                    foundArtist = { name: key, ...data };
+                    break;
+                }
+            }
+            
+            if (foundArtist) {
+                if (foundArtist.localResults) {
+                    // Resaltar la sección del artista localmente
+                    highlightLocalArtist(foundArtist.sectionId);
+                }
+                
+                // Mostrar opción para buscar en YouTube
+                showYouTubeOption(foundArtist.youtubeQuery, foundArtist.name);
+                
+                // Registrar búsqueda
+                if (areCookiesAccepted()) {
+                    incrementStat('artistSearches');
+                }
+            } else {
+                // Si no se encuentra localmente, ofrecer búsqueda en YouTube
+                showYouTubeOption(searchTerm + ' música hondureña', searchTerm);
+                showNotification('Artista no encontrado localmente. Puedes buscarlo en YouTube.');
+            }
+        }
+
+        function highlightLocalArtist(sectionTitle) {
+            // Buscar todos los h2 en la página
+            const allHeadings = document.querySelectorAll('h2');
+            let foundSection = null;
+            
+            allHeadings.forEach(heading => {
+                if (heading.textContent.toLowerCase().includes(sectionTitle.toLowerCase())) {
+                    foundSection = heading;
+                }
+            });
+            
+            if (foundSection) {
+                // Desplazarse a la sección
+                foundSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Resaltar la sección
+                foundSection.parentElement.style.backgroundColor = 'rgba(230, 126, 34, 0.1)';
+                foundSection.parentElement.style.transition = 'background-color 0.5s ease';
+                
+                // Quitar el resaltado después de 3 segundos
+                setTimeout(() => {
+                    foundSection.parentElement.style.backgroundColor = '';
+                }, 3000);
+            }
+        }
+
+        function showYouTubeOption(query, artistName) {
+            // Crear o actualizar el contenedor de resultados de YouTube
+            let youtubeContainer = document.getElementById('youtubeResultsContainer');
+            
+            if (!youtubeContainer) {
+                youtubeContainer = document.createElement('div');
+                youtubeContainer.id = 'youtubeResultsContainer';
+                youtubeContainer.style.marginTop = '20px';
+                youtubeContainer.style.padding = '15px';
+                youtubeContainer.style.backgroundColor = '#f8f9fa';
+                youtubeContainer.style.borderRadius = '8px';
+                youtubeContainer.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                
+                // Insertar después del buscador
+                const searchContainer = document.querySelector('.search-container');
+                if (searchContainer) {
+                    searchContainer.parentNode.insertBefore(youtubeContainer, searchContainer.nextSibling);
+                } else {
+                    document.body.insertBefore(youtubeContainer, document.body.firstChild);
+                }
+            }
+            
+            // Mostrar el contenedor
+            youtubeContainer.style.display = 'block';
+            
+            // Contenido del contenedor
+            youtubeContainer.innerHTML = `
+                <h3 style="margin-top: 0; color: var(--primary);">Resultados para "${artistName}"</h3>
+                <p>¿Quieres buscar música de ${artistName} en YouTube?</p>
+                <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(query)}" 
+                   target="_blank" 
+                   class="youtube-search-btn">
+                    <i class="fab fa-youtube"></i> Buscar en YouTube
+                </a>
+                <button id="closeYouTubeResults" class="close-youtube-btn">
+                    Cerrar
+                </button>
+            `;
+            
+            // Evento para cerrar el contenedor
+            document.getElementById('closeYouTubeResults').addEventListener('click', () => {
+                youtubeContainer.style.display = 'none';
+            });
+        }
+
+        // Galería de imágenes
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const modal = document.getElementById('galleryModal');
+        const modalImg = document.getElementById('modalImage');
+        const captionText = document.getElementById('caption');
+        const closeModal = document.querySelector('.close-modal');
+        
+        galleryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('.gallery-img');
+                const caption = this.querySelector('.gallery-caption');
+                
+                modal.style.display = 'block';
+                modalImg.src = img.src;
+                captionText.innerHTML = caption.innerHTML;
+            });
+        });
+        
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Cookies y estadísticas
+        function areCookiesAccepted() {
+            return localStorage.getItem('cookiesAccepted') === 'true';
+        }
+        
+        function acceptCookies() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookieBanner').classList.remove('show');
+            
+            // Inicializar estadísticas si no existen
+            if (!localStorage.getItem('totalVisits')) {
+                initStats();
+            } else {
+                updateStats();
+            }
+        }
+        
+        function declineCookies() {
+            localStorage.setItem('cookiesAccepted', 'false');
+            document.getElementById('cookieBanner').classList.remove('show');
+        }
+        
+        function showCookieSettings() {
+            showNotification('Configuración de cookies: Actualmente solo usamos cookies esenciales para estadísticas básicas.');
+        }
+        
+        function initStats() {
+            const today = new Date();
+            const currentMonth = today.getMonth() + '-' + today.getFullYear();
+            
+            localStorage.setItem('totalVisits', '1');
+            localStorage.setItem('monthlyVisits', JSON.stringify({
+                month: currentMonth,
+                count: 1
+            }));
+            localStorage.setItem('artistSearches', '0');
+            localStorage.setItem('surveyResponses', '0');
+            
+            updateStatsDisplay();
+        }
+        
+        function updateStats() {
+            // Incrementar visitas totales
+            let totalVisits = parseInt(localStorage.getItem('totalVisits')) || 0;
+            localStorage.setItem('totalVisits', (totalVisits + 1).toString());
+            
+            // Incrementar visitas mensuales
+            const today = new Date();
+            const currentMonth = today.getMonth() + '-' + today.getFullYear();
+            let monthlyVisits = JSON.parse(localStorage.getItem('monthlyVisits')) || { month: '', count: 0 };
+            
+            if (monthlyVisits.month === currentMonth) {
+                monthlyVisits.count++;
+            } else {
+                monthlyVisits = {
+                    month: currentMonth,
+                    count: 1
+                };
+            }
+            
+            localStorage.setItem('monthlyVisits', JSON.stringify(monthlyVisits));
+            
+            updateStatsDisplay();
+        }
+        
+        function incrementStat(statName) {
+            if (!areCookiesAccepted()) return;
+            
+            let currentValue = parseInt(localStorage.getItem(statName)) || 0;
+            localStorage.setItem(statName, (currentValue + 1).toString());
+            
+            updateStatsDisplay();
+        }
+        
+        function updateStatsDisplay() {
+            if (!areCookiesAccepted()) return;
+            
+            document.getElementById('totalVisits').textContent = localStorage.getItem('totalVisits') || '0';
+            
+            const monthlyVisits = JSON.parse(localStorage.getItem('monthlyVisits')) || { count: 0 };
+            document.getElementById('monthlyVisits').textContent = monthlyVisits.count || '0';
+            
+            document.getElementById('artistSearches').textContent = localStorage.getItem('artistSearches') || '0';
+            document.getElementById('surveyResponses').textContent = localStorage.getItem('surveyResponses') || '0';
+        }
+        
+        // Mostrar banner de cookies si no se ha decidido aún
+        if (localStorage.getItem('cookiesAccepted') === null) {
+            setTimeout(() => {
+                document.getElementById('cookieBanner').classList.add('show');
+            }, 2000);
+        } else if (areCookiesAccepted()) {
+            updateStats();
+        }
+        
+        // Event listeners para botones de cookies
+        document.getElementById('acceptCookies').addEventListener('click', acceptCookies);
+        document.getElementById('declineCookies').addEventListener('click', declineCookies);
+        document.getElementById('settingsCookies').addEventListener('click', showCookieSettings);
+        
+        // Inicializar estadísticas si las cookies están aceptadas
+        if (areCookiesAccepted()) {
+            if (!localStorage.getItem('totalVisits')) {
+                initStats();
+            } else {
+                updateStats();
+            }
+        }
+    </script>
+</body>
+</html>
